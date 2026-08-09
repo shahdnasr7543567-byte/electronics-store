@@ -1,0 +1,9 @@
+<app-header (cartClick)="onOpenCart()" />
+
+<main class="app-main">
+  <router-outlet />
+</main>
+
+<app-cart-sidebar [isOpen]="isCartOpen()" (close)="onCloseCart()" />
+
+<app-notification-toast />

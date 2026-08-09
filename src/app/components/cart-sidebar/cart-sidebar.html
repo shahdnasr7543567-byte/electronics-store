@@ -1,0 +1,52 @@
+@if (isOpen()) {
+  <div class="cart-backdrop" (click)="onBackdropClick()"></div>
+}
+
+<aside class="cart-sidebar" [class.cart-sidebar--open]="isOpen()">
+  <header class="cart-sidebar__header">
+    <h2><i class="fa-solid fa-cart-shopping"></i> Your Cart</h2>
+    <button type="button" class="cart-sidebar__close" (click)="close.emit()" aria-label="Close cart">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </header>
+
+  @if (isEmpty()) {
+    <p class="cart-sidebar__empty">
+      <i class="fa-solid fa-cart-shopping"></i>
+      Your cart is empty.
+    </p>
+  } @else {
+    <ul class="cart-sidebar__list">
+      @for (item of items(); track item.product.id) {
+        <li class="cart-item">
+          <img class="cart-item__image" [src]="item.product.thumbnail" [alt]="item.product.title" />
+
+          <div class="cart-item__details">
+            <span class="cart-item__title">{{ item.product.title }}</span>
+            <span class="cart-item__price">${{ lineTotal(item) }}</span>
+
+            <div class="cart-item__qty">
+              <button type="button" (click)="decrement(item)" aria-label="Decrease quantity">−</button>
+              <span>{{ item.quantity }}</span>
+              <button type="button" (click)="increment(item)" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+
+          <button type="button" class="cart-item__remove" (click)="remove(item)" aria-label="Remove item">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <footer class="cart-sidebar__footer">
+      <div class="cart-sidebar__total">
+        <span>Total</span>
+        <span>${{ totalPrice() }}</span>
+      </div>
+      <button type="button" class="cart-sidebar__checkout-btn" (click)="checkout()">
+        Checkout
+      </button>
+    </footer>
+  }
+</aside>

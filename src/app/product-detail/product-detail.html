@@ -1,0 +1,73 @@
+@if (isLoading()) {
+  <p class="detail-status">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    Loading product...
+  </p>
+} @else if (product(); as currentProduct) {
+  <a routerLink="/" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back to store
+  </a>
+
+  <section class="product-detail">
+    <div class="product-detail__media">
+      <img [src]="currentProduct.thumbnail" [alt]="currentProduct.title" />
+      @if (hasDiscount()) {
+        <span class="product-detail__badge">-{{ currentProduct.discountPercentage }}% OFF</span>
+      }
+    </div>
+
+    <div class="product-detail__info">
+      <span class="product-detail__brand">{{ currentProduct.brand }}</span>
+      <h1 class="product-detail__title">{{ currentProduct.title }}</h1>
+
+      <div class="product-detail__rating" [attr.aria-label]="currentProduct.rating + ' out of 5 stars'">
+        @for (isFilled of ratingStars(); track $index) {
+          <i class="fa-star" [class.fa-solid]="isFilled" [class.fa-regular]="!isFilled"></i>
+        }
+        <span class="product-detail__rating-value">{{ currentProduct.rating }}</span>
+      </div>
+
+      <div class="product-detail__price-row">
+        @if (hasDiscount()) {
+          <span class="product-detail__price-old">${{ currentProduct.price }}</span>
+        }
+        <span class="product-detail__price">${{ discountedPrice() }}</span>
+      </div>
+
+      <p class="product-detail__stock" [class.product-detail__stock--out]="!isInStock()">
+        <span class="product-detail__stock-dot"></span>
+        {{ isInStock() ? currentProduct.stock + ' units in stock' : 'Out of stock' }}
+      </p>
+
+      <p class="product-detail__description">{{ currentProduct.description }}</p>
+
+      <button
+        type="button"
+        class="product-detail__add-btn"
+        [disabled]="!isInStock()"
+        (click)="onAddToCart()"
+      >
+        <i class="fa-solid fa-cart-plus"></i>
+        {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+      </button>
+    </div>
+  </section>
+
+  @if (relatedProducts().length > 0) {
+    <section class="related-products">
+      <h2>Related Products</h2>
+      <div class="related-products__grid">
+        @for (related of relatedProducts(); track related.id) {
+          <app-product-card [product]="related" (addToCart)="onRelatedAddToCart($event)" />
+        }
+      </div>
+    </section>
+  }
+} @else {
+  <p class="detail-status">Product not found.</p>
+  <a routerLink="/" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i>
+    Back to store
+  </a>
+}

@@ -1,0 +1,74 @@
+<section class="storefront-toolbar">
+  <div class="storefront-toolbar__search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="text"
+      placeholder="Search products..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+    />
+  </div>
+
+  <select
+    class="storefront-toolbar__select"
+    [ngModel]="selectedCategoryId() ?? ''"
+    (ngModelChange)="onCategoryChange($event)"
+  >
+    <option value="">All Categories</option>
+    @for (category of categories(); track category.id) {
+      <option [value]="category.id">{{ category.name }}</option>
+    }
+  </select>
+
+  <select
+    class="storefront-toolbar__select"
+    [ngModel]="sortOption()"
+    (ngModelChange)="onSortChange($event)"
+  >
+    <option value="default">Sort: Default</option>
+    <option value="price-asc">Price: Low to High</option>
+    <option value="price-desc">Price: High to Low</option>
+    <option value="name-asc">Name: A to Z</option>
+    <option value="name-desc">Name: Z to A</option>
+  </select>
+</section>
+
+@if (isLoading()) {
+  <p class="storefront-status">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    Loading products...
+  </p>
+} @else {
+  @if (loadError()) {
+    <p class="storefront-status storefront-status--warning">{{ loadError() }}</p>
+  }
+
+  @if (filteredProducts().length === 0) {
+    <p class="storefront-status">No products match your search.</p>
+  } @else {
+    <app-products [products]="pagedProducts()" (addToCart)="onAddToCart($event)" />
+
+    @if (totalPages() > 1) {
+      <nav class="pagination" aria-label="Product pages">
+        <button type="button" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        @for (page of pageNumbers(); track page) {
+          <button
+            type="button"
+            class="pagination__page"
+            [class.pagination__page--active]="page === currentPage()"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        }
+
+        <button type="button" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </nav>
+    }
+  }
+}

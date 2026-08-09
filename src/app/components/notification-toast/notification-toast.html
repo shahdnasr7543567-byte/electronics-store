@@ -1,0 +1,11 @@
+<div class="toast-stack">
+  @for (notification of notifications(); track notification.id) {
+    <div class="toast-item" [class]="'toast-item--' + notification.type">
+      <i [class]="iconFor(notification.type)"></i>
+      <span class="toast-item__message">{{ notification.message }}</span>
+      <button type="button" class="toast-item__close" (click)="dismiss(notification.id)" aria-label="Dismiss">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+</div>

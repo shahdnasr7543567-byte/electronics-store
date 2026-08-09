@@ -1,0 +1,29 @@
+<header class="app-header">
+  <a routerLink="/" class="app-header__logo">
+    <i class="fa-solid fa-microchip"></i>
+    Electronics Store
+  </a>
+
+  <div class="app-header__actions">
+    <button
+      type="button"
+      class="app-header__icon-btn"
+      (click)="onToggleTheme()"
+      [attr.aria-label]="isDarkMode() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <i class="fa-solid" [class.fa-sun]="isDarkMode()" [class.fa-moon]="!isDarkMode()"></i>
+    </button>
+
+    <button
+      type="button"
+      class="app-header__icon-btn app-header__cart-btn"
+      (click)="cartClick.emit()"
+      aria-label="Open cart"
+    >
+      <i class="fa-solid fa-cart-shopping"></i>
+      @if (cartItemCount() > 0) {
+        <span class="app-header__cart-badge">{{ cartItemCount() }}</span>
+      }
+    </button>
+  </div>
+</header>

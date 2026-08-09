@@ -1,0 +1,54 @@
+<article class="product-card">
+  <a class="product-card__media" [routerLink]="['/product', product().id]">
+    <img
+      appZoom
+      class="product-card__image"
+      [src]="product().thumbnail"
+      [alt]="product().title"
+    />
+
+    @if (hasDiscount()) {
+      <span class="product-card__badge">-{{ product().discountPercentage }}% OFF</span>
+    }
+
+    <span
+      class="product-card__stock-dot"
+      [class.product-card__stock-dot--out]="!isInStock()"
+      [title]="isInStock() ? 'In stock' : 'Out of stock'"
+    ></span>
+  </a>
+
+  <div class="product-card__body">
+    <span class="product-card__brand">{{ product().brand }}</span>
+
+    <a class="product-card__title" [routerLink]="['/product', product().id]">
+      {{ product().title }}
+    </a>
+
+    <p class="product-card__description">{{ product().description | shortDescription }}</p>
+
+    <div class="product-card__rating" [attr.aria-label]="product().rating + ' out of 5 stars'">
+      @for (isFilled of ratingStars(); track $index) {
+        <i class="fa-star" [class.fa-solid]="isFilled" [class.fa-regular]="!isFilled"></i>
+      }
+      <span class="product-card__rating-value">{{ product().rating }}</span>
+    </div>
+
+    <div class="product-card__price-row">
+      @if (hasDiscount()) {
+        <span class="product-card__price-old">${{ product().price }}</span>
+      }
+      <span class="product-card__price">${{ discountedPrice() }}</span>
+    </div>
+
+    <button
+      type="button"
+      class="product-card__add-btn"
+      [disabled]="!isInStock()"
+      (click)="onAddToCart($event)"
+    >
+      <i class="fa-solid fa-cart-plus"></i>
+      {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+    </button>
+  </div>
+</article>
